@@ -1,0 +1,16 @@
+# mitstack: pipeline caller (MIT-2012).
+# Generated — do not edit by hand; reconciled on every subscribe/upgrade.
+# Names the pipeline that actually builds and gates this app. The recipe
+# lives in the mitstack-eu/newconet-ci repo, which this repo's authors do not write to
+# — this file only lets a developer see it and start a build by hand; it
+# cannot change what the build does or forge the required check it reports.
+name: mitstack pipeline
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    uses: mitstack-eu/newconet-ci/.github/workflows/build.yml@main
+    with:
+      repo: ${{ github.repository }}
+      ref: ${{ github.sha }}
