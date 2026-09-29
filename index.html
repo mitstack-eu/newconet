@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How's the weather?</title>
+<style>
+  body { font: 16px/1.5 system-ui, sans-serif; margin: 0; display: grid; place-items: center;
+         min-height: 100vh; background: #0b1020; color: #e8ecf5; }
+  .card { background: #151b30; padding: 2.5rem 3rem; border-radius: 16px; text-align: center;
+          box-shadow: 0 10px 40px rgba(0,0,0,.4); }
+  h1 { margin: 0 0 .5rem; font-size: 1.6rem; }
+  .temp { font-size: 3rem; font-weight: 700; margin: .5rem 0; }
+  .muted { color: #8b95b5; font-size: .9rem; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>How's the weather?</h1>
+    <div class="temp" id="temp">…</div>
+    <div class="muted" id="place">deployed by mitstack</div>
+  </div>
+  <script>
+    // Open-Meteo, no API key — Berlin by default.
+    fetch("https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&current=temperature_2m")
+      .then(r => r.json())
+      .then(d => { document.getElementById("temp").textContent =
+        Math.round(d.current.temperature_2m) + "°C"; document.getElementById("place").textContent = "Berlin"; })
+      .catch(() => { document.getElementById("temp").textContent = "☁"; });
+  </script>
+</body>
+</html>

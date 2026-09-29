@@ -1,0 +1,5 @@
+{
+  "name": "weather-app",
+  "public": true,
+  "port": 8080
+}
