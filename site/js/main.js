@@ -91,7 +91,11 @@ function initLanguage(doc, win) {
     const url = new URL(win.location.href);
     if (!url.searchParams.has('lang')) return;
     url.searchParams.delete('lang');
-    win.history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
+    try {
+      win.history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
+    } catch {
+      // The address keeps its lang parameter; the switch itself still worked.
+    }
   };
 
   const apply = (taal) => {

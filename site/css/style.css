@@ -879,7 +879,7 @@ h2 {
 
 .keuze-groep {
   min-width: 0;
-  margin: 0;
+  margin: 16px 0 0;
   padding: 0;
   border: 0;
 }
