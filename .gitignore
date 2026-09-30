@@ -1,0 +1,7 @@
+node_modules/
+coverage/
+test-results/
+playwright-report/
+.local-screenshots/
+.dual-graph/
+__pycache__/
