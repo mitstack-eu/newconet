@@ -1,0 +1,8 @@
+# Applies only to a directory build. The Dockerfile removes test files for the
+# stdin build (git archive | docker build -) that CI uses.
+site/**/*.test.js
+site/*.spec.js
+node_modules
+coverage
+test-results
+playwright-report
