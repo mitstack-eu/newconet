@@ -176,7 +176,6 @@ export const EN = {
   lblTelefoon: 'Phone',
   telefoonHint: 'On working days from 08:30 to 17:30',
   lblEmail: 'Email',
-  lblAdres: 'Address',
   lblTijden: 'Office hours',
   tijden: 'Mon–Fri: 08:30–17:30',
 
@@ -196,8 +195,6 @@ export const EN = {
   navVragen2: 'FAQ',
   navContact2: 'Contact',
   rechten: 'NewCONet. All rights reserved.',
-  kvk: 'Chamber of Commerce (KvK) number:',
-  btw: 'VAT number:',
 
   // Sticky contact bar
   barLabel: 'Quick contact',
