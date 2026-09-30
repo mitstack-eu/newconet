@@ -1589,6 +1589,19 @@ describe('which language opens', () => {
     expect(pageLang(doc)).toBe('nl');
   });
 
+  it('still switches the page when history.replaceState throws on the first click', () => {
+    const { doc, win } = loadPage({ search: '?lang=nl' });
+    const escaped = [];
+    win.addEventListener('error', (event) => escaped.push(event.error ?? event.message));
+    win.history.replaceState = () => {
+      throw new win.DOMException('sandboxed', 'SecurityError');
+    };
+    expect(() => flip(doc)).not.toThrow();
+    expect(escaped).toEqual([]);
+    expect(pageLang(doc)).toBe('en');
+    expect($(doc, 'h1').textContent).toBe('Internet for the whole building. Arranged by one partner.');
+  });
+
   it('still honours ?lang=en when storage throws', () => {
     expect(pageLang(loadPage({ search: '?lang=en', storage: 'getter-throws' }).doc)).toBe('en');
   });
