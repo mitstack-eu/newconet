@@ -27,6 +27,8 @@ The mock's frames are screenshots, so they stay out of git in
 `.local-screenshots/internetdiensten/`. The frames show intent: where a frame
 and this text disagree, the text wins. Several frames still show the mock's
 banner, the `[adres invullen]` stubs and a privacy link, none of which ship.
+The address, KvK and btw lines are left out entirely until the owner supplies
+the real details; the page shows no placeholder values.
 
 The inline SVG artwork is too long to repeat here. Copy it verbatim from
 `mock-src.html` at the line ranges this spec names, and keep that file until
@@ -40,26 +42,20 @@ them.
 | Mock part | What ships instead |
 |---|---|
 | `p.mock-banner` and its `.mock-banner` rule | Nothing |
-| `span.mock-todo` stubs and the `.mock-todo` rules | The placeholders in the table below |
+| `span.mock-todo` stubs and the `.mock-todo` rules | Nothing: the address, KvK and btw lines are left out |
 | The privacy link in the footer, `p.form-privacy` in the form and the `.form-privacy` rule | Nothing, until the owner supplies a privacy statement |
-| The `EN` keys `mock`, `adresTodo`, `adresTodo2`, `formPrivacy`, `privacyLink`, `lblBedrijf` and `optioneel2` | Nothing; no element uses them |
+| The `EN` keys `mock`, `adresTodo`, `adresTodo2`, `lblAdres`, `kvk`, `btw`, `formPrivacy`, `privacyLink`, `lblBedrijf` and `optioneel2` | Nothing; no element uses them |
 | The inline `<script>` | `site/js/main.js` and `site/js/i18n.js`, specified below |
 
 The mock's form has no error elements, status region, confirmation panel or
 outage notice. Those carry over from the current `site/index.html` and
 `site/js/main.js` with new copy, as the form section below specifies.
 
-### Placeholders the owner replaces
+### Details left out until the owner supplies them
 
-Three details are placeholders. Keep them character for character, so the
-owner can replace each with one find-and-replace. The English page shows them
-unchanged, so they carry no `data-i18n` key.
-
-| Detail | Displayed text | Where it appears |
-|---|---|---|
-| Address | `Straatnaam 1, 0000 AA Plaatsnaam` | Contact details under `Adres`, and the footer's contact list |
-| KvK-nummer | `00000000` | Footer bottom row, after `KvK-nummer:` |
-| Btw-nummer | `NL000000000B00` | Footer bottom row, after `Btw-nummer:` |
+The page shows no business address, KvK-nummer or btw-nummer, and no
+placeholder in their place. Each is added, with its label, once the owner
+supplies the real value; the open items at the end list them.
 
 The phone number `+31 (0)6 21 10 55 02` with the link target
 `tel:+31621105502`, and the address `info@newconet.nl` with the link target
@@ -602,17 +598,15 @@ list, so a resident reads it before any contact detail.
 | `lblTelefoon` | `strong` | `Telefoon` | `Phone` |
 | `telefoonHint` | `span.detail-hint` | `Op werkdagen van 08:30 tot 17:30` | `On working days from 08:30 to 17:30` |
 | `lblEmail` | `strong` | `E-mail` | `Email` |
-| `lblAdres` | `strong` | `Adres` | `Address` |
 | `lblTijden` | `strong` | `Bereikbaarheid` | `Office hours` |
 | `tijden` | `span` | `Ma–vr: 08:30–17:30` | `Mon–Fri: 08:30–17:30` |
 
-The details list is `ul.contact-details` with `role="list"` and four items.
+The details list is `ul.contact-details` with `role="list"` and three items.
 
 | Label key | Value | Extra line |
 |---|---|---|
 | `lblTelefoon` | `+31 (0)6 21 10 55 02` as a link to `tel:+31621105502` | `span.detail-hint` with `telefoonHint` |
 | `lblEmail` | `info@newconet.nl` as a link to `mailto:info@newconet.nl` | none |
-| `lblAdres` | `Straatnaam 1, 0000 AA Plaatsnaam`, in a plain `span` without a key | none |
 | `lblTijden` | `span` with `tijden` | none |
 
 The form is specified in its own section below.
@@ -639,23 +633,19 @@ The footer has three columns above 960px, two at 960px and below, and one at
 | `navVragen2` | `a` | `Vragen` | `FAQ` |
 | `navContact2` | `a` | `Contact` | `Contact` |
 | `rechten` | `span` | `NewCONet. Alle rechten voorbehouden.` | `NewCONet. All rights reserved.` |
-| `kvk` | `span` | `KvK-nummer:` | `Chamber of Commerce (KvK) number:` |
-| `btw` | `span` | `Btw-nummer:` | `VAT number:` |
 
 | Column | Content, in order |
 |---|---|
 | Brand | `p.footer-logo` with `New<span>CO</span>Net`, then the tagline |
-| Contact | h2, then `ul` with `role="list"`: phone label and `tel:` link, email label and `mailto:` link, `Straatnaam 1, 0000 AA Plaatsnaam` without a key, hours, SLA line |
+| Contact | h2, then `ul` with `role="list"`: phone label and `tel:` link, email label and `mailto:` link, hours, SLA line |
 | Links | `nav.footer-nav`, h2, then six links to `#diensten`, `#voor-wie`, `#werkwijze`, `#over-ons`, `#vragen`, `#contact` |
 
-Below the columns sits `div.container.footer-bottom.footer-legal` with three
-paragraphs and no privacy link.
+Below the columns sits `div.container.footer-bottom.footer-legal` with one
+paragraph and no privacy link.
 
 | Paragraph | Markup |
 |---|---|
 | Copyright | `&copy; <span id="jaar">2026</span> <span data-i18n="rechten">NewCONet. Alle rechten voorbehouden.</span>` |
-| KvK | `<span data-i18n="kvk">KvK-nummer:</span> 00000000` |
-| Btw | `<span data-i18n="btw">Btw-nummer:</span> NL000000000B00` |
 
 The script sets `#jaar` to the current year, and the HTML carries the build
 year as its fallback text.
@@ -1162,7 +1152,7 @@ without reading the code.
 | Structure | The process section is an ordered list of five steps with the exact h3s |
 | Structure | The FAQ has fourteen `details` items with the exact questions, all closed on load |
 | Structure | The hero figure is `role="img"` named by `#hero-visual-titel`, followed by a legend of four items |
-| Copy | Every Dutch text in the copy tables appears exactly; the footer bottom row shows `KvK-nummer: 00000000` and `Btw-nummer: NL000000000B00`; no privacy link or privacy line exists |
+| Copy | Every Dutch text in the copy tables appears exactly; no address, KvK or btw line and no placeholder value such as `Straatnaam`, `00000000` or `NL000000000B00` appears; no privacy link or privacy line exists |
 | Structured data | The `FAQPage` block has fourteen questions whose names and answers equal the page's Dutch FAQ texts in order; the `Organization` block equals the one in this spec |
 | Language | The button shows `EN` with `lang="en"` and label `Switch to English (EN)` on a Dutch page, and `NL` with `lang="nl"` and label `Schakel naar Nederlands (NL)` on an English page |
 | Language | Switching to English sets every `data-i18n` element and `data-i18n-aria` label to its `EN` value, sets `<html lang="en">` and `TITELS.en`, and switching back restores the Dutch HTML exactly |
@@ -1188,18 +1178,18 @@ without reading the code.
 | Access | At 320px and 360px, in both languages, `document.documentElement.scrollWidth` equals the viewport width |
 | Access | Under reduced motion, `html` has `scroll-behavior: auto` |
 | Honesty | No code path shows a sent or thank-you message |
-| Footer | The footer repeats phone, email, address, hours and the SLA line; `#jaar` shows the current year |
+| Footer | The footer repeats phone, email, hours and the SLA line; `#jaar` shows the current year |
 
 ## Open items for the owner
 
-The page ships with the placeholders and claims below until the owner settles
-them.
+The page ships without the details and with the claims below until the owner
+settles them.
 
 | Item | What the page does until then |
 |---|---|
-| The street address | Shows `Straatnaam 1, 0000 AA Plaatsnaam` |
-| The KvK-nummer | Shows `00000000` |
-| The btw-nummer | Shows `NL000000000B00` |
+| The street address | Shows no address line in the contact details or the footer |
+| The KvK-nummer | Shows no KvK line |
+| The btw-nummer | Shows no btw line |
 | The legal company name, if it differs from `NewCONet` | Uses `NewCONet` in the copyright line and the structured data |
 | A privacy statement | Has no privacy link and no privacy line in the form |
 | Whether a quote is free of obligation | States it in the FAQ and the process step |
