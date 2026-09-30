@@ -420,8 +420,8 @@ a unique accessible name.
 
 | Card title key | Icon SVG, `mock-src.html` line | Link `data-onderwerp` | Link `data-gebouw` |
 |---|---|---|---|
-| `dienst1Titel` | 571 | `partner` | none |
-| `dienst2Titel` | 581 | `partner` | none |
+| `dienst1Titel` | 571 | `partner` | `kantoor` |
+| `dienst2Titel` | 581 | `partner` | `appartement` |
 | `dienstWifiTitel` | 590 | `partner` | none |
 | `dienstMaatwerkTitel` | 599 | `partner` | `businesscenter` |
 | `dienst3Titel` | 608 | `partner` | none |
