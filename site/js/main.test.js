@@ -20,7 +20,6 @@ const STORAGE_KEY = 'newconet-taal';
 const PHONE = '+31 (0)6 21 10 55 02';
 const TEL = 'tel:+31621105502';
 const MAIL = 'mailto:info@newconet.nl';
-const ADDRESS = 'Straatnaam 1, 0000 AA Plaatsnaam';
 
 // Each row: key, the element selector the spec names, whether the value lives in aria-label
 // (data-i18n-aria) or innerHTML (data-i18n), the Dutch HTML and the English value.
@@ -180,7 +179,6 @@ const COPY = [
   ["lblTelefoon","strong",false,"Telefoon","Phone"],
   ["telefoonHint","span.detail-hint",false,"Op werkdagen van 08:30 tot 17:30","On working days from 08:30 to 17:30"],
   ["lblEmail","strong",false,"E-mail","Email"],
-  ["lblAdres","strong",false,"Adres","Address"],
   ["lblTijden","strong",false,"Bereikbaarheid","Office hours"],
   ["tijden","span",false,"Ma–vr: 08:30–17:30","Mon–Fri: 08:30–17:30"],
   ["footerTagline","p",false,"Internet en wifi voor multi-tenant kantoorgebouwen en complete appartementencomplexen. Voor eigenaren, beheerders en VvE’s, niet voor particulieren.","Internet and wifi for multi-tenant office buildings and complete apartment complexes. For owners, property managers and owners’ associations, not for private individuals."],
@@ -198,8 +196,6 @@ const COPY = [
   ["navVragen2","a",false,"Vragen","FAQ"],
   ["navContact2","a",false,"Contact","Contact"],
   ["rechten","span",false,"NewCONet. Alle rechten voorbehouden.","NewCONet. All rights reserved."],
-  ["kvk","span",false,"KvK-nummer:","Chamber of Commerce (KvK) number:"],
-  ["btw","span",false,"Btw-nummer:","VAT number:"],
   ["barLabel","nav",true,"Snel contact","Quick contact"],
   ["barBellen","a",false,"Bellen","Call"],
   ["barMailen","a",false,"Mailen","Email"],
@@ -244,7 +240,6 @@ const COPY = [
   ["berichtKopieLabel","label.visually-hidden",false,"Uw bericht","Your message"],
   ["kopieerKnop","button#kopieer-bericht",false,"Kopieer bericht","Copy message"],
   ["mailtoOpnieuw","a#mailto-opnieuw",false,"Open de e-mail opnieuw","Open the email again"],
-  ["gekopieerd","Kopieer bericht",false,"Bericht gekopieerd.","Message copied."],
 ];
 
 const TITLE_NL = 'NewCONet | Internet en wifi voor multi-tenant kantoorgebouwen en complete appartementencomplexen';
@@ -420,7 +415,7 @@ describe('the i18n module', () => {
     expect(Object.keys(EN).filter((key) => !COPY.some((row) => row[0] === key))).toEqual([]);
   });
 
-  it.each(['mock', 'adresTodo', 'adresTodo2', 'formPrivacy', 'privacyLink', 'lblBedrijf', 'optioneel2'])(
+  it.each(['mock', 'adresTodo', 'adresTodo2', 'lblAdres', 'kvk', 'btw', 'formPrivacy', 'privacyLink', 'lblBedrijf', 'optioneel2'])(
     'holds no English entry for the mock-only key %s',
     (key) => {
       expect(Object.keys(EN).length).toBeGreaterThan(0);
@@ -831,8 +826,8 @@ const LINKS = [
   ['routeKantoorKnop', '#contactformulier', 'partner', 'kantoor', ['btn', 'btn-primary']],
   ['routeAppKnop', '#contactformulier', 'partner', 'appartement', ['btn', 'btn-secondary']],
   ['belKnop', TEL, null, null, ['btn', 'btn-alert']],
-  ['dienst1Link', '#contactformulier', 'partner', undefined, ['dienst-link']],
-  ['dienst2Link', '#contactformulier', 'partner', undefined, ['dienst-link']],
+  ['dienst1Link', '#contactformulier', 'partner', 'kantoor', ['dienst-link']],
+  ['dienst2Link', '#contactformulier', 'partner', 'appartement', ['dienst-link']],
   ['dienstWifiLink', '#contactformulier', 'partner', null, ['dienst-link']],
   ['dienstMaatwerkLink', '#contactformulier', 'partner', 'businesscenter', ['dienst-link']],
   ['dienst3Link', '#contactformulier', 'partner', null, ['dienst-link']],
@@ -980,7 +975,8 @@ describe('the header', () => {
     const { doc } = loadPage();
     const actions = $(doc, 'header div.header-actions');
     expect(actions.firstElementChild).toBe(langButton(doc));
-    expect([...actions.children].map((el) => nameOf(el))).toEqual(['EN', 'Storing?', 'Neem contact op']);
+    expect(actions.firstElementChild.textContent.trim()).toBe('EN');
+    expect([...actions.children].map((el) => nameOf(el))).toEqual(['Switch to English (EN)', 'Storing?', 'Neem contact op']);
   });
 
   it('builds the language button as a small secondary button with a hidden globe and a text span', () => {
@@ -1234,39 +1230,42 @@ describe('the contact section', () => {
     expect($(info, 'p.contact-bewoner').dataset.i18n).toBe('contactBewoner');
   });
 
-  it('lists phone, email, address and hours in a list role', () => {
+  it('lists phone, email and hours in a list role', () => {
     const { doc } = loadPage();
     const list = $(doc, 'section.contact ul.contact-details');
     expect(list.getAttribute('role')).toBe('list');
     const items = $$(list, ':scope > li');
-    expect(items).toHaveLength(4);
-    expect(items.map((li) => $(li, 'strong').textContent.trim())).toEqual(['Telefoon', 'E-mail', 'Adres', 'Bereikbaarheid']);
+    expect(items).toHaveLength(3);
+    expect(items.map((li) => $(li, 'strong').textContent.trim())).toEqual(['Telefoon', 'E-mail', 'Bereikbaarheid']);
     expect(link(items[0], PHONE).getAttribute('href')).toBe(TEL);
     expect($(items[0], 'span.detail-hint').textContent.trim()).toBe('Op werkdagen van 08:30 tot 17:30');
     expect(link(items[1], 'info@newconet.nl').getAttribute('href')).toBe(MAIL);
-    expect(norm(items[3].textContent)).toContain('Ma–vr: 08:30–17:30');
-  });
-
-  it('shows the address as a plain span without a translation key', () => {
-    const { doc } = loadPage();
-    const span = $$(doc, 'section.contact ul.contact-details span').find((s) => s.textContent.trim() === ADDRESS);
-    expect(span).toBeDefined();
-    expect(span.hasAttribute('data-i18n')).toBe(false);
+    expect(norm(items[2].textContent)).toContain('Ma–vr: 08:30–17:30');
   });
 });
 
 describe('the footer', () => {
-  it('repeats phone, email, address, hours and the SLA line', () => {
+  it('repeats phone, email, hours and the SLA line', () => {
     const { doc } = loadPage();
     const footer = $(doc, 'footer.site-footer');
     const text = norm(footer.textContent);
     expect(text).toContain(`Telefoon: ${PHONE}`);
     expect(text).toContain('E-mail: info@newconet.nl');
-    expect(text).toContain(ADDRESS);
     expect(text).toContain('Ma–vr: 08:30–17:30');
     expect(text).toContain('Ruimere SLA op aanvraag');
     expect(link(footer, PHONE).getAttribute('href')).toBe(TEL);
     expect(link(footer, 'info@newconet.nl').getAttribute('href')).toBe(MAIL);
+  });
+
+  it('holds only phone, email, hours and the SLA line in its contact list', () => {
+    const { doc } = loadPage();
+    const items = $$(doc, 'footer.site-footer ul[role="list"]:not(.footer-nav ul)').flatMap((ul) => $$(ul, ':scope > li'));
+    expect(items.map((li) => norm(li.textContent))).toEqual([
+      `Telefoon: ${PHONE}`,
+      'E-mail: info@newconet.nl',
+      'Ma–vr: 08:30–17:30',
+      'Ruimere SLA op aanvraag',
+    ]);
   });
 
   it('lays out the brand, the contact list and the six quick links', () => {
@@ -1284,13 +1283,12 @@ describe('the footer', () => {
     ]);
   });
 
-  it('shows the KvK and Btw placeholders character for character, without a privacy link', () => {
+  it('holds only the copyright paragraph in the footer bottom, without a privacy link', () => {
     const { doc } = loadPage();
     const bottom = $(doc, 'footer div.container.footer-bottom.footer-legal');
-    expect($$(bottom, ':scope > p')).toHaveLength(3);
-    const text = norm(bottom.textContent);
-    expect(text).toContain('KvK-nummer: 00000000');
-    expect(text).toContain('Btw-nummer: NL000000000B00');
+    const paragraphs = $$(bottom, ':scope > p');
+    expect(paragraphs).toHaveLength(1);
+    expect(norm(paragraphs[0].textContent)).toBe(`© ${new Date().getFullYear()} NewCONet. Alle rechten voorbehouden.`);
     expect($$(bottom, 'a')).toHaveLength(0);
   });
 
@@ -1356,11 +1354,17 @@ describe('the old positioning stays out', () => {
     ['the mock banner', /mock-banner/],
     ['the mock stubs', /mock-todo/],
     ['the address stub', /\[adres invullen\]/],
+    ['the placeholder street', /Straatnaam/],
+    ['the placeholder town', /Plaatsnaam/],
+    ['the placeholder KvK number', /00000000/],
+    ['the placeholder btw number', /NL000000000B00/],
+    ['a KvK line', /KvK/],
+    ['a btw line', /Btw-nummer/],
     ['the old service attribute', /data-dienst/],
   ];
   const cases = forbidden.flatMap(([label, pattern]) => ['index.html', 'main.js', 'i18n.js'].map((file) => [label, file, pattern]));
 
-  it.each(cases)('has no %s in %s', (_label, file, pattern) => {
+  it.each(cases)('keeps %s out of %s', (_label, file, pattern) => {
     const source = sources().find(([name]) => name === file)[1];
     expect(source).not.toMatch(pattern);
   });
@@ -1447,13 +1451,10 @@ describe('switching the page language', () => {
     expect(mismatches(doc, 'nl')).toEqual([]);
   });
 
-  it('keeps the placeholders, the phone, the email and the year unchanged in English', () => {
+  it('keeps the phone, the email and the year unchanged in English', () => {
     const { doc } = loadPage();
     flip(doc);
     const text = norm(doc.body.textContent);
-    expect(text).toContain(ADDRESS);
-    expect(text).toContain('Chamber of Commerce (KvK) number: 00000000');
-    expect(text).toContain('VAT number: NL000000000B00');
     expect(text).toContain(`© ${new Date().getFullYear()} NewCONet. All rights reserved.`);
     expect($$(doc, 'a[href^="tel:"]').every((a) => a.getAttribute('href') === TEL)).toBe(true);
   });
@@ -1946,7 +1947,7 @@ describe('residents and tenants', () => {
   it('still prefills the radio and building type from a link while bewoner is chosen, leaving the role and visibility alone', () => {
     const { doc } = loadPage();
     type(doc, '#rol', 'bewoner');
-    link($(doc, 'section.routes'), 'Plan een kennismaking').click();
+    byKey(doc, 'routeKantoorKnop').click();
     expect(radio(doc, 'partner').checked).toBe(true);
     expect($(doc, '#gebouw').value).toBe('kantoor');
     expect($(doc, '#rol').value).toBe('bewoner');
